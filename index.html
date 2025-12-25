@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>课程演示</title>
+  <title>Slide Deck</title>
   <style>
     :root {
       font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -127,12 +127,12 @@
   </div>
 
   <div class="controls">
-    <button class="nav" id="prevBtn" aria-label="上一页">←</button>
-    <button class="nav" id="nextBtn" aria-label="下一页">→</button>
+    <button class="nav" id="prevBtn" aria-label="Previous slide">←</button>
+    <button class="nav" id="nextBtn" aria-label="Next slide">→</button>
   </div>
 
   <div id="pageIndicator">
-    <span id="currentPage" title="点击输入页码跳转"></span>
+    <span id="currentPage" title="Click to jump to a page"></span>
     <span>/</span>
     <span id="totalPages"></span>
   </div>
@@ -140,30 +140,30 @@
   <script>
     const slides = [
       {
-        title: "欢迎使用演示框架",
-        body: "这是一个单文件的演示文稿模板。将下方占位内容替换为你的讲课内容即可开始使用。",
+        title: "Welcome to the Deck",
+        body: "This is a single-file slide template. Replace the placeholders below with your teaching content to begin.",
         bullets: [
-          "使用左右按钮或键盘左右键切换页面",
-          "点击右上角的页码可输入要跳转的页数",
-          "根据需要调整 slides 数组以添加或删除页面"
+          "Use the arrow buttons or keyboard arrows to move between slides",
+          "Click the page number in the top-right to jump to any slide",
+          "Adjust the slides array to add or remove pages as needed"
         ]
       },
       {
-        title: "如何编辑内容",
-        body: "在脚本顶部的 slides 数组中，每个对象代表一页。可添加标题、正文和要点列表。",
+        title: "Editing Content",
+        body: "Each object in the slides array represents one slide. You can add a title, body, and bullet list.",
         bullets: [
-          "支持文本自动换行，适配不同屏幕尺寸",
-          "可在 body 中使用基础的 HTML 片段（如 <strong>加粗</strong>）",
-          "删除示例内容后写入你的讲义内容"
+          "Text wraps automatically and adapts to different screen sizes",
+          "Body text accepts basic HTML fragments (e.g., <strong>bold</strong>)",
+          "Remove the sample content and insert your own lecture notes"
         ]
       },
       {
-        title: "开始你的演示",
-        body: "完善内容后直接用浏览器打开本文件，即可离线使用。",
+        title: "Start Presenting",
+        body: "After updating the content, open this file in your browser to use it offline.",
         bullets: [
-          "如需导出，可用浏览器打印为 PDF",
-          "可继续丰富样式，但保持单文件即可",
-          "祝演示顺利！"
+          "To export, use your browser's Print to PDF",
+          "Feel free to extend styles while keeping it single-file",
+          "Happy presenting!"
         ]
       }
     ];
@@ -222,13 +222,13 @@
     nextBtn.addEventListener("click", () => goTo(currentIndex + 1));
 
     currentPageEl.addEventListener("click", () => {
-      const input = prompt(`请输入要跳转的页码（1 - ${slides.length}）：`, currentIndex + 1);
+      const input = prompt(`Enter a slide number (1 - ${slides.length}):`, currentIndex + 1);
       if (!input) return;
       const target = Number(input);
       if (Number.isInteger(target) && target >= 1 && target <= slides.length) {
         goTo(target - 1);
       } else {
-        alert("请输入有效的页码。");
+        alert("Please enter a valid page number.");
       }
     });
 
