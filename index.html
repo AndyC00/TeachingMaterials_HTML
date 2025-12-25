@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>课程演示</title>
+  <style>
+    :root {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: #0f172a;
+      background: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stage {
+      width: min(1200px, 90vw);
+      height: min(720px, 80vh);
+      background: white;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 20px 70px rgba(15, 23, 42, 0.08);
+      border-radius: 18px;
+      padding: clamp(24px, 4vw, 48px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .slide {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: auto;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: 0.2px;
+    }
+    p {
+      margin: 0;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.6;
+      color: #334155;
+    }
+    ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+      color: #334155;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.6;
+    }
+    .controls {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    button.nav {
+      width: 64px;
+      height: 48px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: #0ea5e9;
+      color: white;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+    button.nav[disabled] {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    button.nav:not([disabled]):hover {
+      background: #0284c7;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.25);
+      transform: translateY(-1px);
+    }
+    #pageIndicator {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      font-size: 16px;
+      color: #0f172a;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #currentPage {
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+    #currentPage:hover {
+      background: #e0f2fe;
+    }
+    @media (max-width: 700px) {
+      .stage {
+        width: 95vw;
+        height: 80vh;
+        padding: 18px;
+        border-radius: 14px;
+      }
+      button.nav {
+        width: 56px;
+        height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" aria-live="polite">
+    <div class="slide" id="slideContent"></div>
+  </div>
+
+  <div class="controls">
+    <button class="nav" id="prevBtn" aria-label="上一页">←</button>
+    <button class="nav" id="nextBtn" aria-label="下一页">→</button>
+  </div>
+
+  <div id="pageIndicator">
+    <span id="currentPage" title="点击输入页码跳转"></span>
+    <span>/</span>
+    <span id="totalPages"></span>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        title: "欢迎使用演示框架",
+        body: "这是一个单文件的演示文稿模板。将下方占位内容替换为你的讲课内容即可开始使用。",
+        bullets: [
+          "使用左右按钮或键盘左右键切换页面",
+          "点击右上角的页码可输入要跳转的页数",
+          "根据需要调整 slides 数组以添加或删除页面"
+        ]
+      },
+      {
+        title: "如何编辑内容",
+        body: "在脚本顶部的 slides 数组中，每个对象代表一页。可添加标题、正文和要点列表。",
+        bullets: [
+          "支持文本自动换行，适配不同屏幕尺寸",
+          "可在 body 中使用基础的 HTML 片段（如 <strong>加粗</strong>）",
+          "删除示例内容后写入你的讲义内容"
+        ]
+      },
+      {
+        title: "开始你的演示",
+        body: "完善内容后直接用浏览器打开本文件，即可离线使用。",
+        bullets: [
+          "如需导出，可用浏览器打印为 PDF",
+          "可继续丰富样式，但保持单文件即可",
+          "祝演示顺利！"
+        ]
+      }
+    ];
+
+    const slideContent = document.getElementById("slideContent");
+    const currentPageEl = document.getElementById("currentPage");
+    const totalPagesEl = document.getElementById("totalPages");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let currentIndex = 0;
+
+    function renderSlide(index) {
+      const slide = slides[index];
+      slideContent.innerHTML = "";
+
+      const titleEl = document.createElement("h1");
+      titleEl.textContent = slide.title;
+      slideContent.appendChild(titleEl);
+
+      if (slide.body) {
+        const bodyEl = document.createElement("p");
+        bodyEl.innerHTML = slide.body;
+        slideContent.appendChild(bodyEl);
+      }
+
+      if (Array.isArray(slide.bullets) && slide.bullets.length) {
+        const listEl = document.createElement("ul");
+        slide.bullets.forEach(item => {
+          const li = document.createElement("li");
+          li.innerHTML = item;
+          listEl.appendChild(li);
+        });
+        slideContent.appendChild(listEl);
+      }
+
+      updateControls();
+    }
+
+    function updateControls() {
+      const total = slides.length;
+      currentPageEl.textContent = currentIndex + 1;
+      totalPagesEl.textContent = total;
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === total - 1;
+    }
+
+    function goTo(index) {
+      const total = slides.length;
+      if (index < 0 || index >= total) return;
+      currentIndex = index;
+      renderSlide(currentIndex);
+    }
+
+    prevBtn.addEventListener("click", () => goTo(currentIndex - 1));
+    nextBtn.addEventListener("click", () => goTo(currentIndex + 1));
+
+    currentPageEl.addEventListener("click", () => {
+      const input = prompt(`请输入要跳转的页码（1 - ${slides.length}）：`, currentIndex + 1);
+      if (!input) return;
+      const target = Number(input);
+      if (Number.isInteger(target) && target >= 1 && target <= slides.length) {
+        goTo(target - 1);
+      } else {
+        alert("请输入有效的页码。");
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") goTo(currentIndex - 1);
+      if (event.key === "ArrowRight") goTo(currentIndex + 1);
+    });
+
+    renderSlide(currentIndex);
+  </script>
+</body>
+</html>
