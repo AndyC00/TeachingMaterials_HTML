@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Deck</title>
+  <style>
+    :root {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: #0f172a;
+      background: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stage {
+      width: min(1200px, 90vw);
+      height: min(720px, 80vh);
+      background: white;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 20px 70px rgba(15, 23, 42, 0.08);
+      border-radius: 18px;
+      padding: clamp(24px, 4vw, 48px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .slide {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: auto;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: 0.2px;
+    }
+    p {
+      margin: 0;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.6;
+      color: #334155;
+    }
+    ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+      color: #334155;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.6;
+    }
+    .controls {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    button.nav {
+      width: 64px;
+      height: 48px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: #0ea5e9;
+      color: white;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+    button.nav[disabled] {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    button.nav:not([disabled]):hover {
+      background: #0284c7;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.25);
+      transform: translateY(-1px);
+    }
+    #pageIndicator {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      font-size: 16px;
+      color: #0f172a;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #currentPage {
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+    #currentPage:hover {
+      background: #e0f2fe;
+    }
+    @media (max-width: 700px) {
+      .stage {
+        width: 95vw;
+        height: 80vh;
+        padding: 18px;
+        border-radius: 14px;
+      }
+      button.nav {
+        width: 56px;
+        height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" aria-live="polite">
+    <div class="slide" id="slideContent"></div>
+  </div>
+
+  <div class="controls">
+    <button class="nav" id="prevBtn" aria-label="Previous slide">←</button>
+    <button class="nav" id="nextBtn" aria-label="Next slide">→</button>
+  </div>
+
+  <div id="pageIndicator">
+    <span id="currentPage" title="Click to jump to a page"></span>
+    <span>/</span>
+    <span id="totalPages"></span>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        title: "Welcome to the Deck",
+        body: "This is a single-file slide template. Replace the placeholders below with your teaching content to begin.",
+        bullets: [
+          "Use the arrow buttons or keyboard arrows to move between slides",
+          "Click the page number in the top-right to jump to any slide",
+          "Adjust the slides array to add or remove pages as needed"
+        ]
+      },
+      {
+        title: "Editing Content",
+        body: "Each object in the slides array represents one slide. You can add a title, body, and bullet list.",
+        bullets: [
+          "Text wraps automatically and adapts to different screen sizes",
+          "Body text accepts basic HTML fragments (e.g., <strong>bold</strong>)",
+          "Remove the sample content and insert your own lecture notes"
+        ]
+      },
+      {
+        title: "Start Presenting",
+        body: "After updating the content, open this file in your browser to use it offline.",
+        bullets: [
+          "To export, use your browser's Print to PDF",
+          "Feel free to extend styles while keeping it single-file",
+          "Happy presenting!"
+        ]
+      }
+    ];
+
+    const slideContent = document.getElementById("slideContent");
+    const currentPageEl = document.getElementById("currentPage");
+    const totalPagesEl = document.getElementById("totalPages");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let currentIndex = 0;
+
+    function renderSlide(index) {
+      const slide = slides[index];
+      slideContent.innerHTML = "";
+
+      const titleEl = document.createElement("h1");
+      titleEl.textContent = slide.title;
+      slideContent.appendChild(titleEl);
+
+      if (slide.body) {
+        const bodyEl = document.createElement("p");
+        bodyEl.innerHTML = slide.body;
+        slideContent.appendChild(bodyEl);
+      }
+
+      if (Array.isArray(slide.bullets) && slide.bullets.length) {
+        const listEl = document.createElement("ul");
+        slide.bullets.forEach(item => {
+          const li = document.createElement("li");
+          li.innerHTML = item;
+          listEl.appendChild(li);
+        });
+        slideContent.appendChild(listEl);
+      }
+
+      updateControls();
+    }
+
+    function updateControls() {
+      const total = slides.length;
+      currentPageEl.textContent = currentIndex + 1;
+      totalPagesEl.textContent = total;
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === total - 1;
+    }
+
+    function goTo(index) {
+      const total = slides.length;
+      if (index < 0 || index >= total) return;
+      currentIndex = index;
+      renderSlide(currentIndex);
+    }
+
+    prevBtn.addEventListener("click", () => goTo(currentIndex - 1));
+    nextBtn.addEventListener("click", () => goTo(currentIndex + 1));
+
+    currentPageEl.addEventListener("click", () => {
+      const input = prompt(`Enter a slide number (1 - ${slides.length}):`, currentIndex + 1);
+      if (!input) return;
+      const target = Number(input);
+      if (Number.isInteger(target) && target >= 1 && target <= slides.length) {
+        goTo(target - 1);
+      } else {
+        alert("Please enter a valid page number.");
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") goTo(currentIndex - 1);
+      if (event.key === "ArrowRight") goTo(currentIndex + 1);
+    });
+
+    renderSlide(currentIndex);
+  </script>
+</body>
+</html>
