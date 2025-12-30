@@ -123,12 +123,20 @@
 </head>
 <body>
   <div class="stage" aria-live="polite">
-    <div class="slide" id="slideContent"></div>
+    <div class="slide" id="slideContent">
+      <h1>What is a Prompt?</h1>
+      <p>A prompt is the instructions or conversation we give an AI model so it knows what we want, like talking to a smart assistant with clear directions.</p>
+      <ul>
+        <li>Example prompts: "Summarize this paragraph" or "Write a 4-line poem about sunlight."</li>
+        <li>Prompt engineering is the skill of phrasing these instructions effectively to get the output you want.</li>
+        <li>It often means adding context, specifying the format you want, or giving examples the model can mimic.</li>
+      </ul>
+    </div>
   </div>
 
   <div class="controls">
-    <button class="nav" id="prevBtn" aria-label="Previous slide">←</button>
-    <button class="nav" id="nextBtn" aria-label="Next slide">→</button>
+    <button class="nav" id="prevBtn" aria-label="Previous slide">&lt;</button>
+    <button class="nav" id="nextBtn" aria-label="Next slide">&gt;</button>
   </div>
 
   <div id="pageIndicator">
@@ -140,30 +148,40 @@
   <script>
     const slides = [
       {
-        title: "Welcome to the Deck",
-        body: "This is a single-file slide template. Replace the placeholders below with your teaching content to begin.",
+        title: "What is a Prompt?",
+        body: "A prompt is the instructions or conversation we give an AI model so it knows what we want, like talking to a smart assistant with clear directions.",
         bullets: [
-          "Use the arrow buttons or keyboard arrows to move between slides",
-          "Click the page number in the top-right to jump to any slide",
-          "Adjust the slides array to add or remove pages as needed"
+          "Example prompts: \"Summarize this paragraph\" or \"Write a 4-line poem about sunlight.\"",
+          "Prompt engineering is the skill of phrasing these instructions effectively to get the output you want.",
+          "It often means adding context, specifying the format you want, or giving examples the model can mimic."
         ]
       },
       {
-        title: "Editing Content",
-        body: "Each object in the slides array represents one slide. You can add a title, body, and bullet list.",
+        title: "Generative AI Capabilities",
+        body: "Google Gemini, the AI that powers Google AI Studio, is a cutting-edge multimodal model. Multimodal means it can work with more than just text.",
         bullets: [
-          "Text wraps automatically and adapts to different screen sizes",
-          "Body text accepts basic HTML fragments (e.g., <strong>bold</strong>)",
-          "Remove the sample content and insert your own lecture notes"
+          "It can see: detect objects in images, describe them, or locate what you ask for.",
+          "It can listen: take an audio clip, transcribe it, or interpret what it hears.",
+          "It can watch: process a video, summarize it, or answer questions about scenes.",
+          "It can handle long text: early AI like the first ChatGPT models handled only a few pages; Gemini can take hundreds at once."
         ]
       },
       {
-        title: "Start Presenting",
-        body: "After updating the content, open this file in your browser to use it offline.",
+        title: "Why This Matters",
+        body: "These capabilities help break the coding barrier because you can prototype ideas simply by describing them.",
         bullets: [
-          "To export, use your browser's Print to PDF",
-          "Feel free to extend styles while keeping it single-file",
-          "Happy presenting!"
+          "Focus on the creative intent and let the AI generate the code or content, also called vibe coding.",
+          "Google AI Studio turns app building into a conversational process: describe what you want and iterate.",
+          "Powerful reasoning plus long context means you can test ideas quickly without starting from scratch."
+        ]
+      },
+      {
+        title: "Responsible Use Note",
+        body: "AI is powerful but not perfect; it can make mistakes or produce incorrect information.",
+        bullets: [
+          "Today's goal is to get outputs, then evaluate and refine them with a critical eye.",
+          "Double-check facts, verify code, and iterate on prompts to steer the model.",
+          "Keep human judgment in the loop, especially for important decisions."
         ]
       }
     ];
@@ -241,3 +259,4 @@
   </script>
 </body>
 </html>
+
