@@ -95,6 +95,26 @@
       line-height: 1.6;
       color: #334155;
     }
+    .link-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      margin-top: 16px;
+    }
+    .link-container a {
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: #0284c7;
+      text-decoration: none;
+      padding: 12px 24px;
+      border: 2px solid #0284c7;
+      border-radius: 8px;
+      transition: background 120ms ease, color 120ms ease;
+    }
+    .link-container a:hover {
+      background: #0284c7;
+      color: white;
+    }
     ul, ol {
       margin: 8px 0 0;
       padding-left: 20px;
@@ -151,6 +171,36 @@
       object-fit: contain;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .fullscreen-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .fullscreen-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .slide.fullscreen {
+      position: relative;
+      padding: 0;
+      gap: 0;
+    }
+    .stage.fullscreen {
+      padding: 0;
+      border-radius: 0;
     }
     @media (max-width: 700px) {
       .image-comparison {
@@ -304,10 +354,22 @@
         ]
       },
       {
-        title: "C.R.A.F.T."
+        title: "C.R.A.F.T.",
+        hideTitle: true,
+        images: [
+          "Images/图片1.png"
+        ]
       },
       {
-        title: "C.A.T."
+        title: "C.A.T.",
+        hideTitle: true,
+        images: [
+          "Images/图片2.png"
+        ]
+      },
+      {
+        title: "Craft trail",
+        link: "https://gemini.google.com/share/b5642a92b5a3?hl=en_GB"
       }
     ];
 
@@ -317,6 +379,7 @@
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const navigator = document.getElementById("navigator");
+    const stage = slideContent.closest(".stage");
 
     let currentIndex = 0;
 
@@ -347,10 +410,16 @@
       slideContent.innerHTML = "";
       slideContent.className = "slide";
       slideContent.style.justifyContent = ""; // Reset styles
+      slideContent.style.gap = ""; // Reset gap
+      if (stage) {
+        stage.classList.remove("fullscreen");
+      }
 
-      const titleEl = document.createElement("h1");
-      titleEl.textContent = slide.title;
-      slideContent.appendChild(titleEl);
+      if (!slide.hideTitle) {
+        const titleEl = document.createElement("h1");
+        titleEl.textContent = slide.title;
+        slideContent.appendChild(titleEl);
+      }
 
       if (Array.isArray(slide.images)) {
         if (slide.images.length === 2) {
@@ -374,31 +443,41 @@
           
           slideContent.appendChild(comparisonDiv);
         } else if (slide.images.length === 1) {
-          const singleImageDiv = document.createElement("div");
-          singleImageDiv.className = "single-image";
+          const imageDiv = document.createElement("div");
+          // Use fullscreen style when title is hidden
+          if (slide.hideTitle) {
+            imageDiv.className = "fullscreen-image";
+            slideContent.classList.add("fullscreen");
+            slideContent.style.gap = "0"; // Remove gap for fullscreen image
+            if (stage) {
+              stage.classList.add("fullscreen");
+            }
+          } else {
+            imageDiv.className = "single-image";
+          }
           
           const img = document.createElement("img");
           img.src = slide.images[0];
           img.alt = slide.title || "Image";
-          singleImageDiv.appendChild(img);
+          imageDiv.appendChild(img);
           
-          slideContent.appendChild(singleImageDiv);
+          slideContent.appendChild(imageDiv);
         }
       } else {
-        if (slide.body) {
-          const bodyEl = document.createElement("p");
-          bodyEl.innerHTML = slide.body;
-          slideContent.appendChild(bodyEl);
-        }
+      if (slide.body) {
+        const bodyEl = document.createElement("p");
+        bodyEl.innerHTML = slide.body;
+        slideContent.appendChild(bodyEl);
+      }
 
-        if (Array.isArray(slide.bullets) && slide.bullets.length) {
-          const listEl = document.createElement("ul");
-          slide.bullets.forEach(item => {
-            const li = document.createElement("li");
-            li.innerHTML = item;
-            listEl.appendChild(li);
-          });
-          slideContent.appendChild(listEl);
+      if (Array.isArray(slide.bullets) && slide.bullets.length) {
+        const listEl = document.createElement("ul");
+        slide.bullets.forEach(item => {
+          const li = document.createElement("li");
+          li.innerHTML = item;
+          listEl.appendChild(li);
+        });
+        slideContent.appendChild(listEl);
         }
 
         if (Array.isArray(slide.orderedList) && slide.orderedList.length) {
@@ -415,6 +494,20 @@
             slideContent.style.justifyContent = "center";
           }
         }
+      }
+
+      if (slide.link) {
+        const linkContainer = document.createElement("div");
+        linkContainer.className = "link-container";
+        
+        const linkEl = document.createElement("a");
+        linkEl.href = slide.link;
+        linkEl.target = "_blank";
+        linkEl.rel = "noopener noreferrer";
+        linkEl.textContent = slide.link;
+        linkContainer.appendChild(linkEl);
+        
+        slideContent.appendChild(linkContainer);
       }
 
       updateControls();
