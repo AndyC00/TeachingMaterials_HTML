@@ -95,12 +95,28 @@
       line-height: 1.6;
       color: #334155;
     }
-    ul {
+    ul, ol {
       margin: 8px 0 0;
       padding-left: 20px;
       color: #334155;
       font-size: clamp(16px, 2vw, 20px);
       line-height: 1.6;
+    }
+    .centered-list {
+      margin: auto;
+      padding-left: 40px;
+      padding-right: 40px;
+      max-width: 90%;
+      align-self: center;
+      flex: 0 1 auto;
+    }
+    .centered-list li {
+      margin-bottom: 28px;
+      line-height: 1.8;
+      padding-left: 8px;
+    }
+    .centered-list li:last-child {
+      margin-bottom: 0;
     }
     .image-comparison {
       display: flex;
@@ -122,6 +138,20 @@
       font-weight: 600;
       color: #0284c7;
     }
+    .single-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      margin-top: 16px;
+    }
+    .single-image img {
+      max-width: 80%;
+      max-height: 60vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
     @media (max-width: 700px) {
       .image-comparison {
         flex-direction: column;
@@ -132,6 +162,9 @@
       }
       .vs-divider {
         transform: rotate(90deg);
+      }
+      .single-image img {
+        max-width: 90%;
       }
     }
     .controls {
@@ -245,22 +278,36 @@
         ]
       },
       {
-        title: "Editing Content",
-        body: "Each object in the slides array represents one slide. You can add a title, body, and bullet list.",
-        bullets: [
-          "Text wraps automatically and adapts to different screen sizes",
-          "Body text accepts basic HTML fragments (e.g., <strong>bold</strong>)",
-          "Remove the sample content and insert your own lecture notes"
+        title: "Example",
+        images: [
+          "https://www.techspot.com/articles-info/2733/images/2023-12-10-image.jpg"
         ]
       },
       {
-        title: "Start Presenting",
-        body: "After updating the content, open this file in your browser to use it offline.",
-        bullets: [
-          "To export, use your browser's Print to PDF",
-          "Feel free to extend styles while keeping it single-file",
-          "Happy presenting!"
+        title: "Software Development: Building a house",
+        images: [
+          "https://www.foxroach.com/blog/app/uploads/2020/07/BuildaHouse-730x485-1.jpg"
         ]
+      },
+      {
+        title: "Software Development Steps",
+        orderedList: [
+          "drawing house blueprint - Using AI to clearify the functionalities of your project then get a Craft prompt",
+          "Laying the house fundation - Give the Craft prompt to  AI to get the first prototype",
+          "Start building the house - keep iterating your project to make it better"
+        ]
+      },
+      {
+        title: "Draw the blueprint - CRAFT",
+        images: [
+          "https://images.ctfassets.net/s4ybdu2ld1ox/7KoNH8PR71vjj6zKJ2klLO/0ef16a934b9095f429392dfe0e9f16e3/home-blueprints.jpeg?w=1000&h=683&fl=progressive&q=70&fm=jpg&bg=transparent"
+        ]
+      },
+      {
+        title: "C.R.A.F.T."
+      },
+      {
+        title: "C.A.T."
       }
     ];
 
@@ -277,7 +324,7 @@
       slides.forEach((slide, index) => {
         const navItem = document.createElement("div");
         navItem.className = "nav-item";
-        navItem.textContent = slide.title;
+        navItem.textContent = `${index + 1}. ${slide.title}`;
         navItem.setAttribute("data-index", index);
         navItem.addEventListener("click", () => goTo(index));
         navigator.appendChild(navItem);
@@ -298,31 +345,45 @@
     function renderSlide(index) {
       const slide = slides[index];
       slideContent.innerHTML = "";
+      slideContent.className = "slide";
+      slideContent.style.justifyContent = ""; // Reset styles
 
       const titleEl = document.createElement("h1");
       titleEl.textContent = slide.title;
       slideContent.appendChild(titleEl);
 
-      if (Array.isArray(slide.images) && slide.images.length === 2) {
-        const comparisonDiv = document.createElement("div");
-        comparisonDiv.className = "image-comparison";
-        
-        const img1 = document.createElement("img");
-        img1.src = slide.images[0];
-        img1.alt = "AI Studio";
-        comparisonDiv.appendChild(img1);
-        
-        const vsDiv = document.createElement("div");
-        vsDiv.className = "vs-divider";
-        vsDiv.textContent = "VS";
-        comparisonDiv.appendChild(vsDiv);
-        
-        const img2 = document.createElement("img");
-        img2.src = slide.images[1];
-        img2.alt = "Cursor";
-        comparisonDiv.appendChild(img2);
-        
-        slideContent.appendChild(comparisonDiv);
+      if (Array.isArray(slide.images)) {
+        if (slide.images.length === 2) {
+          const comparisonDiv = document.createElement("div");
+          comparisonDiv.className = "image-comparison";
+          
+          const img1 = document.createElement("img");
+          img1.src = slide.images[0];
+          img1.alt = "AI Studio";
+          comparisonDiv.appendChild(img1);
+          
+          const vsDiv = document.createElement("div");
+          vsDiv.className = "vs-divider";
+          vsDiv.textContent = "VS";
+          comparisonDiv.appendChild(vsDiv);
+          
+          const img2 = document.createElement("img");
+          img2.src = slide.images[1];
+          img2.alt = "Cursor";
+          comparisonDiv.appendChild(img2);
+          
+          slideContent.appendChild(comparisonDiv);
+        } else if (slide.images.length === 1) {
+          const singleImageDiv = document.createElement("div");
+          singleImageDiv.className = "single-image";
+          
+          const img = document.createElement("img");
+          img.src = slide.images[0];
+          img.alt = slide.title || "Image";
+          singleImageDiv.appendChild(img);
+          
+          slideContent.appendChild(singleImageDiv);
+        }
       } else {
         if (slide.body) {
           const bodyEl = document.createElement("p");
@@ -338,6 +399,21 @@
             listEl.appendChild(li);
           });
           slideContent.appendChild(listEl);
+        }
+
+        if (Array.isArray(slide.orderedList) && slide.orderedList.length) {
+          const listEl = document.createElement("ol");
+          listEl.className = "centered-list";
+          slide.orderedList.forEach(item => {
+            const li = document.createElement("li");
+            li.innerHTML = item;
+            listEl.appendChild(li);
+          });
+          slideContent.appendChild(listEl);
+          // Center content vertically when only title and ordered list are present
+          if (!slide.body && (!Array.isArray(slide.bullets) || slide.bullets.length === 0)) {
+            slideContent.style.justifyContent = "center";
+          }
         }
       }
 
