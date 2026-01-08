@@ -194,6 +194,26 @@
     .centered-list li:last-child {
       margin-bottom: 0;
     }
+    .topic-blocks {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      flex: 1;
+      margin-top: -12px;
+      padding: 0 20px;
+      overflow-y: auto;
+    }
+    .topic-block {
+      background: linear-gradient(to bottom, #ffffff 0%, #f0f9ff 100%);
+      border: 2px solid #7dd3fc;
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+      font-size: clamp(14px, 1.8vw, 20px);
+      line-height: 1.5;
+      color: #334155;
+      min-height: 0;
+    }
     .image-comparison {
       display: flex;
       gap: 24px;
@@ -533,6 +553,17 @@
         images: [
           "https://cdn.prod.website-files.com/6320d50a472d7123344bfd02/63feb5d78544d856d7f2c310_lead-software-development-team.jpg"
         ]
+      },
+      {
+        title: "Project topics",
+        bullets: [
+          "Chinese Story Relay - Collaborative Chinese writing exercise with AI story continuation (input: text / output: text)",
+          "Physics/Chemistry Animator - AI-driven explanation or visualisation of scientific concepts (input: text / output: animated image)",
+          "Comic Grid / 4-panel Cartoonist - Generates four-panel comic storylines with AI-crafted narratives (input: text / output: image, text)",
+          "Personal Recipe Analyst - Analyses food images to provide recipes or nutritional breakdowns (input: image / output: text)",
+          "Credibility Checker - Enables AI to verify the authenticity and reliability of information (input: text / output: text)",
+          "Blockbuster Factory - Generates film concepts including plots, characters, and taglines (input: text / output: image, text)"
+        ]
       }
     ];
 
@@ -692,16 +723,29 @@
         }
 
         if (Array.isArray(slide.bullets) && slide.bullets.length) {
-          const listEl = document.createElement("ul");
-          slide.bullets.forEach(item => {
-            const li = document.createElement("li");
-            li.innerHTML = item;
-            listEl.appendChild(li);
-          });
-          if (shouldCenter) {
-            contentWrapper.appendChild(listEl);
+          // Special handling for page 17 (index 16) - Project topics
+          if (index === 16) {
+            const topicBlocksContainer = document.createElement("div");
+            topicBlocksContainer.className = "topic-blocks";
+            slide.bullets.forEach(item => {
+              const topicBlock = document.createElement("div");
+              topicBlock.className = "topic-block";
+              topicBlock.innerHTML = item;
+              topicBlocksContainer.appendChild(topicBlock);
+            });
+            slideContent.appendChild(topicBlocksContainer);
           } else {
-            slideContent.appendChild(listEl);
+            const listEl = document.createElement("ul");
+            slide.bullets.forEach(item => {
+              const li = document.createElement("li");
+              li.innerHTML = item;
+              listEl.appendChild(li);
+            });
+            if (shouldCenter) {
+              contentWrapper.appendChild(listEl);
+            } else {
+              slideContent.appendChild(listEl);
+            }
           }
         }
 
