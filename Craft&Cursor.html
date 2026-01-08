@@ -8,7 +8,7 @@
     :root {
       font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       color: #0f172a;
-      background: #f8fafc;
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
     }
     * { box-sizing: border-box; }
     body {
@@ -19,8 +19,8 @@
     }
     .navigator {
       width: 250px;
-      background: white;
-      border-right: 1px solid #e2e8f0;
+      background: linear-gradient(to bottom, #ffffff 0%, #f0f9ff 100%);
+      border-right: 1px solid #7dd3fc;
       padding: 24px 16px;
       overflow-y: auto;
       flex-shrink: 0;
@@ -63,13 +63,14 @@
       justify-content: center;
       padding: 24px;
       overflow: auto;
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
     }
     .stage {
       width: min(1200px, 100%);
       height: min(720px, 80vh);
-      background: white;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 20px 70px rgba(15, 23, 42, 0.08);
+      background: linear-gradient(to bottom, #ffffff 0%, #f0f9ff 100%);
+      border: 1px solid #7dd3fc;
+      box-shadow: 0 20px 70px rgba(14, 165, 233, 0.15);
       border-radius: 18px;
       padding: clamp(24px, 4vw, 48px);
       display: flex;
@@ -82,6 +83,7 @@
       flex-direction: column;
       gap: 16px;
       overflow: auto;
+      background: transparent;
     }
     h1 {
       margin: 0;
@@ -91,9 +93,22 @@
     }
     p {
       margin: 0;
-      font-size: clamp(16px, 2vw, 20px);
+      font-size: clamp(20px, 2.5vw, 28px);
       line-height: 1.6;
       color: #334155;
+    }
+    .centered-content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+    .centered-content ul {
+      text-align: left;
+      display: inline-block;
+      margin: 16px auto 0;
     }
     .link-container {
       display: flex;
@@ -119,7 +134,7 @@
       margin: 8px 0 0;
       padding-left: 20px;
       color: #334155;
-      font-size: clamp(16px, 2vw, 20px);
+      font-size: clamp(20px, 2.5vw, 28px);
       line-height: 1.6;
     }
     .centered-list {
@@ -153,6 +168,36 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+    .text-comparison {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      margin-top: 16px;
+    }
+    .text-comparison .text-box {
+      flex: 1;
+      max-width: 45%;
+      padding: 24px;
+      background: linear-gradient(to bottom, #ffffff 0%, #f0f9ff 100%);
+      border: 2px solid #7dd3fc;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+    }
+    .text-comparison .text-box h2 {
+      margin: 0 0 16px 0;
+      font-size: clamp(20px, 3vw, 28px);
+      color: #0284c7;
+      font-weight: 600;
+    }
+    .text-comparison .text-box p {
+      margin: 0;
+      font-size: clamp(20px, 2.5vw, 28px);
+      line-height: 1.6;
+      color: #334155;
+    }
     .vs-divider {
       font-size: clamp(24px, 3vw, 32px);
       font-weight: 600;
@@ -168,6 +213,20 @@
     .single-image img {
       max-width: 80%;
       max-height: 60vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .large-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      margin-top: 16px;
+    }
+    .large-image img {
+      max-width: 95%;
+      max-height: 75vh;
       object-fit: contain;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -209,6 +268,13 @@
       }
       .image-comparison img {
         max-width: 80%;
+      }
+      .text-comparison {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .text-comparison .text-box {
+        max-width: 90%;
       }
       .vs-divider {
         transform: rotate(90deg);
@@ -368,6 +434,13 @@
         ]
       },
       {
+        title: "CRAFT vs CAT",
+        textComparison: [
+          "When should I use Craft?",
+          "When should I use CAT?"
+        ]
+      },
+      {
         title: "Craft trail",
         link: "https://gemini.google.com/share/b5642a92b5a3?hl=en_GB"
       },
@@ -378,12 +451,37 @@
         ]
       },
       {
-        title: "What is Cursor"
+        title: "What is Cursor",
+        body: "Cursor:",
+        bullets: [
+          "The AI engineer in your computer",
+          "A co-worker sit next to you"
+        ]
       },
       {
         title: "How to use Cursor?",
         images: [
           "https://www.rsystems.com/wp-content/uploads/2025/08/CURSOR-LOGO.jpg"
+        ]
+      },
+      {
+        title: "Development steps",
+        orderedList: [
+          "Ask - clearify your thoughts/ ideas",
+          "Plan - Let the AI to have a clear plan for what will do in detail",
+          "Agent - Start working on it"
+        ]
+      },
+      {
+        title: "Start building the house: Iteration",
+        images: [
+          "Images/Iteration.png"
+        ]
+      },
+      {
+        title: "Transfer from AI Studio to Cursor",
+        images: [
+          "Images/transfer.png"
         ]
       },
       {
@@ -473,6 +571,9 @@
             if (stage) {
               stage.classList.add("fullscreen");
             }
+          } else if (index === 11) {
+            // Use large image style for page 12 (index 11)
+            imageDiv.className = "large-image";
           } else {
             imageDiv.className = "single-image";
           }
@@ -484,21 +585,70 @@
           
           slideContent.appendChild(imageDiv);
         }
-      } else {
-      if (slide.body) {
-        const bodyEl = document.createElement("p");
-        bodyEl.innerHTML = slide.body;
-        slideContent.appendChild(bodyEl);
       }
 
-      if (Array.isArray(slide.bullets) && slide.bullets.length) {
-        const listEl = document.createElement("ul");
-        slide.bullets.forEach(item => {
-          const li = document.createElement("li");
-          li.innerHTML = item;
-          listEl.appendChild(li);
-        });
-        slideContent.appendChild(listEl);
+      if (Array.isArray(slide.textComparison) && slide.textComparison.length === 2) {
+        const comparisonDiv = document.createElement("div");
+        comparisonDiv.className = "text-comparison";
+        
+        const textBox1 = document.createElement("div");
+        textBox1.className = "text-box";
+        const h2_1 = document.createElement("h2");
+        h2_1.textContent = slide.textComparison[0];
+        textBox1.appendChild(h2_1);
+        comparisonDiv.appendChild(textBox1);
+        
+        const vsDiv = document.createElement("div");
+        vsDiv.className = "vs-divider";
+        vsDiv.textContent = "VS";
+        comparisonDiv.appendChild(vsDiv);
+        
+        const textBox2 = document.createElement("div");
+        textBox2.className = "text-box";
+        const h2_2 = document.createElement("h2");
+        h2_2.textContent = slide.textComparison[1];
+        textBox2.appendChild(h2_2);
+        comparisonDiv.appendChild(textBox2);
+        
+        slideContent.appendChild(comparisonDiv);
+      }
+
+      if (!Array.isArray(slide.images) && !Array.isArray(slide.textComparison)) {
+        // Center content for page 11 (index 10)
+        const shouldCenter = index === 10 && (slide.body || (Array.isArray(slide.bullets) && slide.bullets.length));
+        let contentWrapper = null;
+        if (shouldCenter) {
+          contentWrapper = document.createElement("div");
+          contentWrapper.className = "centered-content";
+        }
+
+        if (slide.body) {
+          const bodyEl = document.createElement("p");
+          bodyEl.innerHTML = slide.body;
+          if (shouldCenter) {
+            contentWrapper.appendChild(bodyEl);
+          } else {
+            slideContent.appendChild(bodyEl);
+          }
+        }
+
+        if (Array.isArray(slide.bullets) && slide.bullets.length) {
+          const listEl = document.createElement("ul");
+          slide.bullets.forEach(item => {
+            const li = document.createElement("li");
+            li.innerHTML = item;
+            listEl.appendChild(li);
+          });
+          if (shouldCenter) {
+            contentWrapper.appendChild(listEl);
+          } else {
+            slideContent.appendChild(listEl);
+          }
+        }
+
+        if (shouldCenter && contentWrapper) {
+          slideContent.appendChild(contentWrapper);
+          // Center content both horizontally and vertically, keep title at top
         }
 
         if (Array.isArray(slide.orderedList) && slide.orderedList.length) {
